@@ -19,6 +19,6 @@ This ansible playbook configures a Samba server on the hosts listed under the bl
 6. Allow Samba traffic through firewall
 
 # Example usage
-'''bash
+```bash
 sudo ansible-playbook --user blueteam configure_fileshare/configure_fileshare.yml --key-file ~/.ssh/id_rsa --ask-become-pass
-'''
+```
