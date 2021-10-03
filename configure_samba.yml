@@ -1,0 +1,40 @@
+# Mark Johnson
+# Team: Bravo
+# Class: CSEC.473.01
+# Fall Semester 2021-22
+# Homework 5: Ansible
+
+# Desc: This ansible playbook is designed to automatically install samba on the hosts that
+# 	the playbook is being executed against. This needs to have the flag '--ask-become-pass'
+#   specified as several sudo operations will need to be performed.
+#
+# Note: This expects to run on a host that has already had samba installed on it
+
+---
+- name: Configure Samba
+  # run against all blue team fileshares
+  hosts: bluefileshare
+  become: yes
+  vars:
+    # Get the configurations to append to smb.conf
+    smb_conf: "{{ lookup('file', './smb_conf') }}"
+
+  tasks:
+  - name: Ensure hostname set correctly
+    shell: "hostnamectl set-hostname blue{{team_num}}-fileshare"
+  
+  - name: Create public Samba location
+    shell: mkdir /var/samba
+  
+  - name: Modify public Samba location permissions
+    shell: chmod 777 /var/samba
+    
+  - name: Modify smb.conf
+    shell: "echo \"{{smb_conf}}\" >> /etc/samba/smb.conf"
+  
+  - name: Restart Samba daemon
+    shell: systemctl restart smbd
+    
+  - name: Allow samba traffic through firewall
+    shell: ufw allow Samba
+...
